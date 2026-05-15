@@ -1,26 +1,20 @@
 # ================================================
-# CleanNTB.ps1
-# Corporate Maintenance Tool
-# Version: 1.1
+# CORPORATE MAINTENANCE TOOL
+# Version: 1.0
 # ================================================
 
 $ErrorActionPreference = 'SilentlyContinue'
 $ProgressPreference = 'SilentlyContinue'
 
-$LogFile   = 'C:\Maintenance.log'
+$LogFile  = 'C:\Maintenance.log'
 $StartTime = Get-Date
-$Before    = [math]::Round((Get-PSDrive C).Free / 1GB, 2)
+$Before = [math]::Round((Get-PSDrive C).Free / 1GB, 2)
 
 function Log($Message) {
-
     $TimeStamp = "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] $Message"
 
     Write-Host $TimeStamp
-
-    try {
-        Add-Content -Path $LogFile -Value $TimeStamp
-    }
-    catch {}
+    Add-Content -Path $LogFile -Value $TimeStamp
 }
 
 Log "================================================"
@@ -162,105 +156,7 @@ Log "Tiempo total: $Duration"
 Log "MANTENIMIENTO FINALIZADO"
 
 # =================================================
-# POPUP CORPORATIVO
+# POPUP USUARIO
 # =================================================
 
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
-
-$LogoUrl  = "https://i.imgur.com/jyK331E.jpeg"
-$LogoPath = "$env:TEMP\primary_logo.jpg"
-
-try {
-    Invoke-WebRequest -Uri $LogoUrl -OutFile $LogoPath
-}
-catch {}
-
-$form = New-Object System.Windows.Forms.Form
-$form.Text = "Primary Service Desk"
-$form.Size = New-Object System.Drawing.Size(420,320)
-$form.StartPosition = "CenterScreen"
-$form.TopMost = $true
-$form.FormBorderStyle = "FixedDialog"
-$form.MaximizeBox = $false
-$form.BackColor = [System.Drawing.Color]::White
-
-# =================================================
-# LOGO
-# =================================================
-
-if (Test-Path $LogoPath) {
-
-    $pictureBox = New-Object System.Windows.Forms.PictureBox
-    $pictureBox.Image = [System.Drawing.Image]::FromFile($LogoPath)
-    $pictureBox.SizeMode = "Zoom"
-    $pictureBox.Location = New-Object System.Drawing.Point(110,10)
-    $pictureBox.Size = New-Object System.Drawing.Size(180,80)
-
-    $form.Controls.Add($pictureBox)
-}
-
-# =================================================
-# TITULO
-# =================================================
-
-$title = New-Object System.Windows.Forms.Label
-$title.Text = "Primary Service Desk"
-$title.Font = New-Object System.Drawing.Font("Segoe UI",14,[System.Drawing.FontStyle]::Bold)
-$title.AutoSize = $true
-$title.Location = New-Object System.Drawing.Point(95,95)
-
-$form.Controls.Add($title)
-
-# =================================================
-# MENSAJE
-# =================================================
-
-$message = New-Object System.Windows.Forms.Label
-$message.Text = @"
-Mantenimiento finalizado correctamente.
-
-Puede volver a utilizar la notebook.
-
-Espacio recuperado: $Recovered GB
-
-Se recomienda reiniciar el equipo.
-"@
-
-$message.Font = New-Object System.Drawing.Font("Segoe UI",10)
-$message.AutoSize = $true
-$message.Location = New-Object System.Drawing.Point(55,140)
-
-$form.Controls.Add($message)
-
-# =================================================
-# BOTON OK
-# =================================================
-
-$button = New-Object System.Windows.Forms.Button
-$button.Text = "OK"
-$button.Width = 100
-$button.Height = 35
-$button.Location = New-Object System.Drawing.Point(150,230)
-
-$button.Add_Click({
-    $form.Close()
-})
-
-$form.Controls.Add($button)
-
-# =================================================
-# MOSTRAR VENTANA
-# =================================================
-
-$form.Add_Shown({
-    $form.Activate()
-})
-
-[void]$form.ShowDialog()
-
-# =================================================
-# LIMPIEZA
-# =================================================
-
-Remove-Item $LogoPath -Force
+msg * "Mantenimiento finalizado.`nPuede volver a utilizar la notebook.`nSe recomienda reiniciarla."
